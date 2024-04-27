@@ -29,6 +29,12 @@ async function run() {
 
     const craftCollection = client.db("artistryWorld").collection("crafts");
 
+    app.get("/crafts", async (req, res)=>{
+      const cursor = craftCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.post("/addCraft", async (req, res) =>{
       console.log(req.body);
       const result = await craftCollection.insertOne(req.body);
