@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -17,32 +17,41 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect(); 
+    // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
 
     const craftCollection = client.db("artistryWorld").collection("crafts");
 
-    app.get("/crafts", async (req, res)=>{
+    app.get("/crafts", async (req, res) => {
       const cursor = craftCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-    })
+    });
 
-    app.post("/addCraft", async (req, res) =>{
+    app.post("/addCraft", async (req, res) => {
       console.log(req.body);
       const result = await craftCollection.insertOne(req.body);
       console.log(result);
       res.send(result);
-    })
+    });
 
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    app.delete("/crafts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await craftCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -50,10 +59,10 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.get('/', (req, res) =>{
-    res.send('artistry world server is running ......')
-})
+app.get("/", (req, res) => {
+  res.send("artistry world server is running ......");
+});
 
-app.listen(port,()=>{
-    console.log(`artistry world server is running on port : ${port}`);
-})
+app.listen(port, () => {
+  console.log(`artistry world server is running on port : ${port}`);
+});
