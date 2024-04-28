@@ -51,6 +51,18 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/myCrafts/:email/:option", async (req,res) => {
+      const email = req.params.email;
+      const option = req.params.option;
+      const query = { 
+        user_email: email,
+        customization: option
+       };
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.post("/addCraft", async (req, res) => {
       console.log(req.body);
       const result = await craftCollection.insertOne(req.body);
