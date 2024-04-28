@@ -42,6 +42,16 @@ async function run() {
       res.send(result);
     });
 
+
+    app.get("/crafts/user/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { user_email: email };
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.post("/addCraft", async (req, res) => {
       console.log(req.body);
       const result = await craftCollection.insertOne(req.body);
