@@ -42,7 +42,6 @@ async function run() {
       res.send(result);
     });
 
-
     app.get("/crafts/user/:email", async (req, res) => {
       const email = req.params.email;
       console.log(email);
@@ -50,12 +49,34 @@ async function run() {
       const cursor = craftCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
-    })
+    });
 
     app.post("/addCraft", async (req, res) => {
       console.log(req.body);
       const result = await craftCollection.insertOne(req.body);
       console.log(result);
+      res.send(result);
+    });
+
+    app.put("/crafts/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      // const options = { upsert: true };
+      const updateCraft = req.body;
+      const craft = {
+        $set: {
+          item_name: updateCraft.item_name,
+          image: updateCraft.image,
+          subcategory_name: updateCraft.subcategory_name,
+          customization: updateCraft.customization,
+          price: updateCraft.price,
+          processing_time: updateCraft.processing_time,
+          stockStatus: updateCraft.stockStatus,
+          description: updateCraft.description,
+          rating: updateCraft.rating
+        },
+      };
+      const result = await craftCollection.updateOne(filter,craft);
       res.send(result);
     });
 
