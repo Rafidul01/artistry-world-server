@@ -28,6 +28,7 @@ async function run() {
     // await client.db("admin").command({ ping: 1 });
 
     const craftCollection = client.db("artistryWorld").collection("crafts");
+    const categoriesCollection = client.db("artistryWorld").collection("subcategory");
 
     app.get("/crafts", async (req, res) => {
       const cursor = craftCollection.find();
@@ -62,6 +63,12 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     })
+
+    app.get("/categories", async (req, res) => {
+      const cursor = categoriesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     app.post("/addCraft", async (req, res) => {
       console.log(req.body);
